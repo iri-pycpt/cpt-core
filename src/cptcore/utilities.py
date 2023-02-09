@@ -259,50 +259,6 @@ def detect_changes(outputdir, wait=0.2):
         cur_sizes = copy.deepcopy(new_sizes )
     return dt.timedelta(seconds=i*wait)
 
-CPT_DEFAULT_VERSION = '17.7.8'
-CPT_VALID_VERSIONS = ['17.7.0','17.7.4','17.7.8']
-
-def install_cpt_unix(version=CPT_DEFAULT_VERSION):
-    assert platform.system() != 'Windows', 'On Windows, you should be using install_cpt_windows'
-    assert version in CPT_VALID_VERSIONS, f'PyCPT Requires CPT version to be one of {CPT_VALID_VERSIONS}'
-    CPT_SPACE = Path().home().absolute() / '.pycpt_worker_space'
-
-    #if CPT_SPACE.is_dir():
-    #    rmrf(CPT_SPACE)
-    CPT_SPACE.mkdir(exist_ok=True, parents=True)
-
-    ORIGINAL_CPT_TARBALL = Path(__file__).parents[1]/ 'fortran' / f'CPT.{version}.tar.gz'
-    CPT_TARBALL = CPT_SPACE / f'CPT.{version}.tar.gz'
-    CPT_BIN_DIR =  CPT_SPACE / 'CPT' / f'{version}'
-    CPT_EXECUTABLE = CPT_BIN_DIR / 'CPT.x'
-    shutil.copy(ORIGINAL_CPT_TARBALL,  CPT_TARBALL)
-
-    subprocess.call(['tar','xf', f'CPT.{version}.tar.gz' ], cwd=str(CPT_SPACE.absolute()))
-    assert CPT_BIN_DIR.is_dir(), 'FAILED TO UNPACK CPT TARBALL'
-    print('PyCPT CPT DISTRIBUTION NOT DETECTED - COMPILING CPT FROM SOURCE')
-    if version in [ '17.7.0' ]: 
-        subprocess.call(['make', 'clean'], cwd=str(CPT_BIN_DIR.absolute() / 'lapack' / 'lapack'))
-        subprocess.call(['cp', 'make.inc.example', 'make.inc'], cwd=str(CPT_BIN_DIR.absolute() / 'lapack' / 'lapack'))
-    subprocess.call(['make'], cwd=str(CPT_BIN_DIR.absolute()))
-    assert CPT_EXECUTABLE.is_file(), 'FAILED TO COMPILE CPT'
-    return CPT_EXECUTABLE.parents[0]
-
-def install_cpt_windows(version=CPT_DEFAULT_VERSION):
-    assert platform.system() == 'Windows', 'On Unix, you should be using install_cpt_unix'
-    assert version in CPT_VALID_VERSIONS, f'PyCPT Requires CPT version to be one of {CPT_VALID_VERSIONS}'
-    print('PyCPT CPT DISTRIBUTION NOT DETECTED - COMPILING CPT FROM SOURCE')
-    CPT_SPACE = Path().home().absolute() / '.pycpt_worker_space'
-    CPT_INSTALLER = Path(__file__).parents[1]/ 'fortran' / f'CPT_batch_installation_{version}.exe'
-    #if CPT_SPACE.is_dir():
-    #    rmrf(CPT_SPACE)
-    CPT_SPACE.mkdir(exist_ok=True, parents=True)
-    cptspacevar = str(CPT_SPACE) if str(CPT_SPACE)[:2] != "C:" else str(CPT_SPACE)[2:] 
-    print(f'/DIR={cptspacevar}')
-    subprocess.call([str(CPT_INSTALLER.absolute()), '/SP-', '/VERYSILENT', '/NOCANCEL', f'/DIR={cptspacevar}'])
-    CPT_EXECUTABLE = CPT_SPACE / 'CPT_batch.exe'
-    assert CPT_EXECUTABLE.is_file(), 'FAILED TO COMPILE CPT'
-    return CPT_EXECUTABLE.parents[0]
-
 def install_cpt_windows2():
     assert platform.system() == 'Windows', 'On Unix, you should be using install_cpt_unix'
     CPT_INSTALLER = Path(str(Path(__file__).parents[1]/ 'fortran' / f'CPT_batch_installation_17.7.8.exe').replace('.egg', ''))
@@ -323,16 +279,3 @@ def install_cpt_linux():
     CPT_EXECUTABLE = (path / 'fortran' / 'Linux' / 'CPT' / '17.7.4').absolute() / 'CPT.x'
     assert CPT_EXECUTABLE.is_file(), 'FAILED TO COMPILE CPT'
     return CPT_EXECUTABLE
-
-
-def find_cpt(version=CPT_DEFAULT_VERSION):
-    assert version in CPT_VALID_VERSIONS, f'PyCPT Requires CPT version to be one of {CPT_VALID_VERSIONS}'
-    if platform.system() == 'Windows':
-        CPT_SPACE = Path().home().absolute() / '.pycpt_worker_space'
-        CPT_BIN_DIR =  CPT_SPACE / 'CPT' / f'{version}'
-        CPT_EXECUTABLE = CPT_SPACE / 'CPT_batch.exe'
-    else: 
-        CPT_SPACE = Path().home().absolute() / '.pycpt_worker_space'
-        CPT_BIN_DIR =  CPT_SPACE / 'CPT' / f'{version}'
-        CPT_EXECUTABLE = CPT_BIN_DIR / 'CPT.x'
-    return CPT_EXECUTABLE.parents[0] if CPT_EXECUTABLE.is_file() else False 
