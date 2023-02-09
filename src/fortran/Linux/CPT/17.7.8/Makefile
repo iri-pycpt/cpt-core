@@ -38,7 +38,7 @@ LAPACK_LIB=lapack
 BLAS_LIB=refblas
 
 
-ifeq ($(FC),gfortran)
+ifeq ($(findstring gfortran,$(FC)),gfortran)
    CPPDEFS += -DGFORTRAN 
    ifeq ($(DEBUG),1)
       FFLAGS= -g -Wall -fbounds-check $(CPPDEFS) -std=f2008 -fall-intrinsics

@@ -272,10 +272,10 @@ def install_cpt_windows2():
 def install_cpt_linux():
     assert platform.system() == 'Linux', 'Must only use "install_cpt_linux" on linux machines'
     path = Path( str( Path(__file__).parents[1]).replace('.egg', ''))
-    sfmakedepend = (path / 'fortran' / 'Linux' / 'CPT' / '17.7.4').absolute() / 'sfmakedepend'
+    sfmakedepend = (path / 'fortran' / 'Linux' / 'CPT' / '17.7.8').absolute() / 'sfmakedepend'
     os.chmod(sfmakedepend, 0o0777)
-    subprocess.call(['cp', 'make.inc.example', 'make.inc'], cwd=str((path/'fortran'/'Linux'/'CPT'/'17.7.4').absolute() / 'lapack' / 'lapack'))
-    subprocess.call(['make'], cwd=str((path/'fortran'/'Linux'/'CPT'/'17.7.4').absolute()))
-    CPT_EXECUTABLE = (path / 'fortran' / 'Linux' / 'CPT' / '17.7.4').absolute() / 'CPT.x'
+    subprocess.call(['cp', 'make.inc.example', 'make.inc'], cwd=str((path/'fortran'/'Linux'/'CPT'/'17.7.8').absolute() / 'lapack' / 'lapack'))
+    subprocess.call(['make', 'FC=x86_64-conda-linux-gnu-gfortran'], cwd=str((path/'fortran'/'Linux'/'CPT'/'17.7.8').absolute()))
+    CPT_EXECUTABLE = (path / 'fortran' / 'Linux' / 'CPT' / '17.7.8').absolute() / 'CPT.x'
     assert CPT_EXECUTABLE.is_file(), 'FAILED TO COMPILE CPT'
     return CPT_EXECUTABLE
