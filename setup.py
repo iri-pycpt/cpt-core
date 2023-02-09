@@ -1,8 +1,9 @@
+from pathlib import Path
 from setuptools import *
 import os
 
-with open('{}/../README.md'.format(os.getenv('RECIPE_DIR')), 'r', encoding='utf-8') as fh:
-	long_description= fh.read()
+readme_path = Path(__file__).parent / 'README.md'
+long_description = readme_path.read_text(encoding='utf-8')
 
 setup(
     name = "cptcore",
@@ -15,17 +16,15 @@ setup(
     url = "https://iri.columbia.edu/our-expertise/climate/tools/",
     packages=[  'cptcore', 'cptcore.functional', 'cptcore.tests' ],
     package_data={ 
-        'cptcore': ['{}/../src/fortran'.format(os.getenv('RECIPE_DIR')) + ''.join(['/*' for i in range(j) ]) for j in range(10) ],
-        'cptcore.tests': ['{}/../src/tests/data/seasonal/*'.format(os.getenv('RECIPE_DIR')), '{}/../src/tests/data/subseasonal/*'.format(os.getenv('RECIPE_DIR'))]
+        'cptcore': ['{}/src/fortran'.format(os.getenv('RECIPE_DIR')) + ''.join(['/*' for i in range(j) ]) for j in range(10) ],
+        'cptcore.tests': ['{}/src/tests/data/seasonal/*'.format(os.getenv('RECIPE_DIR')), '{}/../src/tests/data/subseasonal/*'.format(os.getenv('RECIPE_DIR'))]
     },
-	package_dir={ 
-        'cptcore': '{}/../src'.format(os.getenv('RECIPE_DIR')), 
-        'cptcore.tests': '{}/../src/tests'.format(os.getenv('RECIPE_DIR')), 
-        'cptcore.functional': '{}/../src/functional'.format(os.getenv('RECIPE_DIR')), 
+    package_dir={ 
+        '': 'src'
     },
-	python_requires=">=3.0",
+    python_requires=">=3.0",
     long_description=long_description,
-	long_description_content_type='text/markdown',
+    long_description_content_type='text/markdown',
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Topic :: Utilities",
