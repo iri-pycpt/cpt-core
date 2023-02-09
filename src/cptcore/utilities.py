@@ -318,6 +318,7 @@ def install_cpt_linux():
     path = Path( str( Path(__file__).parents[1]).replace('.egg', ''))
     sfmakedepend = (path / 'fortran' / 'Linux' / 'CPT' / '17.7.4').absolute() / 'sfmakedepend'
     os.chmod(sfmakedepend, 0o0777)
+    subprocess.call(['cp', 'make.inc.example', 'make.inc'], cwd=str((path/'fortran'/'Linux'/'CPT'/'17.7.4').absolute() / 'lapack' / 'lapack'))
     subprocess.call(['make'], cwd=str((path/'fortran'/'Linux'/'CPT'/'17.7.4').absolute()))
     CPT_EXECUTABLE = (path / 'fortran' / 'Linux' / 'CPT' / '17.7.4').absolute() / 'CPT.x'
     assert CPT_EXECUTABLE.is_file(), 'FAILED TO COMPILE CPT'
