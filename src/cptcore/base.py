@@ -118,14 +118,15 @@ class CPT:
         self.write(3)
         
     def read(self):
-        std_out = ""
-        queue = list("           ")
-        while CPT_SECRET not in "".join(queue[::-1]) and self.cpt_process.poll() is None:
+        output = io.StringIO()
+        while True:
             char = self.reader.read(1)
-            queue.pop(-1)
-            queue.insert(0, char)
-            std_out += char
-        return std_out
+            if char == "":
+                break
+            output.write(char)
+            if (output.getvalue().endswith(CPT_SECRET)):
+                break
+        return output.getvalue()
 
 
     def status(self ):
