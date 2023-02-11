@@ -77,10 +77,7 @@ class CPT:
             assert Path(self.cpt).is_file(), 'CPT executable not found'
         elif platform.system() == 'Darwin':
             self.last_cmd = 'CPT.x'
-            if platform.processor() == 'arm':
-                self.cpt = str(Path(__file__).parents[1] / 'fortran' / platform.system() / 'M1' / 'CPT'/'17.7.4'/ 'CPT.x').replace('.egg', '')
-            else:
-                self.cpt = str(Path(__file__).parents[1] / 'fortran' / platform.system() / 'intel' / 'CPT'/'17.7.4'/ 'CPT.x').replace('.egg', '')
+            self.cpt = str(Path(__file__).parents[1] / 'fortran' / platform.system() / 'intel' / 'CPT'/'17.7.8'/ 'CPT.x').replace('.egg', '')
             assert Path(self.cpt).is_file(), 'CPT executable not found'
             os.chmod(self.cpt, 0o777)
         elif platform.system() == 'Linux':
